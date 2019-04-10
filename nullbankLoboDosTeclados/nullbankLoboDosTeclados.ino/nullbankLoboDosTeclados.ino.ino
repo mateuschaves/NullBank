@@ -12,6 +12,9 @@
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 
+// Inicializa o display no endereco 0x27
+LiquidCrystal_I2C lsd(0x27,2,1,0,4,5,6,7,3, POSITIVE);
+
  
 const byte amountLines = 4; 
 const byte amountColumns = 4; 
@@ -39,21 +42,30 @@ void antibioticos();
 
 void setup(){
   Serial.begin(9600);
+  lsd.begin(16,2);
+  lsd.setCursor(0,0);
+
 }
   
 void loop(){
   
   char key = keyboard.getKey();
   
+  
   if(key == 'E'){
-    if(!isPasswordValid(password))
-      Serial.println("Senha invalida parca");
+    if(!isPasswordValid(password)){
+      lsd.clear();
+      lsd.print("Can't do this ");
+      lsd.setCursor(0, 1);
+      lsd.print("right ? Moises");
       clearManPassword();
-      Serial.println(password);
+      lsd.print(password);
+    }
   }
 
   if(key == 'C'){
       antibioticos();
+      lsd.print(password);
   }
   
   if(pressedKey > 6){
@@ -63,7 +75,9 @@ void loop(){
   if( key && (key != 'E' && key != 'D' && key != 'C') ){
     password.concat(key);
     pressedKey++;
-    Serial.println(password);
+    lsd.clear();
+    lsd.print(password);
+    
   }
   
   
@@ -82,9 +96,10 @@ void antibioticos(){
   if(password.length() == 1){
     password = "";
   }else{
-    password.remove(1,1);  
+    password.remove(password.length() - 1, 1);  
   }
   Serial.println(password);
+  lsd.clear();
 }
 
 void clearManPassword(){

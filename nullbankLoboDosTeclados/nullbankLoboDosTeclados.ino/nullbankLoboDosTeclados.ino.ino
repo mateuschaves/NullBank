@@ -35,6 +35,7 @@ int pressedKey = 0;
 
 int isPasswordValid(char * password);
 void clearManPassword();
+void antibioticos();
 
 void setup(){
   Serial.begin(9600);
@@ -49,6 +50,10 @@ void loop(){
       Serial.println("Senha invalida parca");
       clearManPassword();
       Serial.println(password);
+  }
+
+  if(key == 'C'){
+      antibioticos();
   }
   
   if(pressedKey > 6){
@@ -71,6 +76,15 @@ int isPasswordValid(String password){
   }else{
     return 1;
   }
+}
+
+void antibioticos(){
+  if(password.length() == 1){
+    password = "";
+  }else{
+    password.remove(1,1);  
+  }
+  Serial.println(password);
 }
 
 void clearManPassword(){

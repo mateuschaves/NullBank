@@ -11,6 +11,13 @@
 #include <string.h>
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
+#include <SPI.h>
+#include <RFID.h>
+
+#define SDA_DIO 9
+#define RESET_DIO 8
+
+RFID RC522(SDA_DIO, RESET_DIO);
 
 // Inicializa o display no endereco 0x27
 LiquidCrystal_I2C lsd(0x27,2,1,0,4,5,6,7,3, POSITIVE);
@@ -34,7 +41,6 @@ byte JunileuColunas[amountColumns] = {38,40, 42,44};
 Keypad keyboard = Keypad( makeKeymap(matrix), JubileuLines, JunileuColunas, amountLines, amountColumns); 
  
 String password;
-String criptopassword;
 int pressedKey = 0;
 
 int isPasswordValid(char * password);
@@ -45,10 +51,24 @@ void setup(){
   Serial.begin(9600);
   lsd.begin(16,2);
   lsd.setCursor(0,0);
-
+  SPI.begin(); 
+  RC522.init();
 }
   
 void loop(){
+
+
+
+  if (RC522.isCard()){
+    RC522.readCardSerial();
+    Serial.println("Card detected:");
+    for(int i=0;i<5;i++){ 
+      Serial.print(RC522.serNum[i]);
+    }
+    Serial.println();
+    Serial.println();
+  }
+  delay(1000);
   
   char key = keyboard.getKey();
   
@@ -76,7 +96,6 @@ void loop(){
   
   if( key && (key != 'E' && key != 'D' && key != 'C') ){
     password.concat(key);
-    criptopassword.concat("*");
     pressedKey++;
     lsd.clear();
     Serial.println(password);

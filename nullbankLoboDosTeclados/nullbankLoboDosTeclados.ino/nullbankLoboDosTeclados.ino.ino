@@ -28,12 +28,13 @@ char matrix[amountLines][amountColumns] = {
 };
  
  
-byte JubileuLines[amountLines] = {3, 4, 5, 6}; 
-byte JunileuColunas[amountColumns] = {8, 9, 10,11};
+byte JubileuLines[amountLines] = {30, 32, 34, 36}; 
+byte JunileuColunas[amountColumns] = {38,40, 42,44};
  
 Keypad keyboard = Keypad( makeKeymap(matrix), JubileuLines, JunileuColunas, amountLines, amountColumns); 
  
 String password;
+String criptopassword;
 int pressedKey = 0;
 
 int isPasswordValid(char * password);
@@ -65,7 +66,8 @@ void loop(){
 
   if(key == 'C'){
       antibioticos();
-      lsd.print(password);
+      for(int i = 0; i < password.length(); i++)
+        lsd.print("*");
   }
   
   if(pressedKey > 6){
@@ -74,9 +76,12 @@ void loop(){
   
   if( key && (key != 'E' && key != 'D' && key != 'C') ){
     password.concat(key);
+    criptopassword.concat("*");
     pressedKey++;
     lsd.clear();
-    lsd.print(password);
+    Serial.println(password);
+    for(int i = 0; i < password.length(); i++)
+      lsd.print("*");
     
   }
   
@@ -84,7 +89,7 @@ void loop(){
 }
 
 int isPasswordValid(String password){
-  if(password.length() < 6 ){
+  if(password.length() != 6 ){
     pressedKey = 0;
     return 0;
   }else{

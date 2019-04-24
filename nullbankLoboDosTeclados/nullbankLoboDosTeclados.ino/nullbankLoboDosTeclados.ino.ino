@@ -5,7 +5,6 @@
  *  All rights reserved.
 */
 
-
 // Bibliotecas
 #include <Keypad.h>
 #include <string.h>
@@ -39,13 +38,27 @@ byte JubileuLines[amountLines] = {30, 32, 34, 36};
 byte JunileuColunas[amountColumns] = {38,40, 42,44};
  
 Keypad keyboard = Keypad( makeKeymap(matrix), JubileuLines, JunileuColunas, amountLines, amountColumns); 
- 
+
+enum {
+  Welcome,
+  Credit,
+  Debit,
+  Price,
+  Quota,
+  InsertCard,
+  Password,
+  Sucess,
+  Fail
+};
+int State = 0;
 String password;
 int pressedKey = 0;
 
 int isPasswordValid(char * password);
 void clearManPassword();
 void antibioticos();
+void WelcomeDeLadin();
+void Fiado();
 
 void setup(){
   Serial.begin(9600);
@@ -56,10 +69,16 @@ void setup(){
 }
   
 void loop(){
-
-
-
-  if (RC522.isCard()){
+  
+  switch(State){
+    case Welcome:  
+        WelcomeDeLadin();
+        break;
+     case Credit:
+        Fiado();
+        break;
+  }
+  /*if (RC522.isCard()){
     RC522.readCardSerial();
     Serial.println("Card detected:");
     for(int i=0;i<5;i++){ 
@@ -68,7 +87,7 @@ void loop(){
     Serial.println();
     Serial.println();
   }
-  delay(1000);
+  //delay(1000);
   
   char key = keyboard.getKey();
   
@@ -102,7 +121,7 @@ void loop(){
     for(int i = 0; i < password.length(); i++)
       lsd.print("*");
     
-  }
+  }*/
   
   
 }
@@ -129,3 +148,33 @@ void antibioticos(){
 void clearManPassword(){
   password = "";
 }
+
+/*
+  Welcome state
+*/
+void WelcomeDeLadin(){
+  char key = keyboard.getKey();
+  lsd.clear();
+  lsd.setCursor(3,0);
+  lsd.print("NullBank");
+  lsd.setCursor(0,1);
+  lsd.print("1-Debit/2-Credit");
+  switch(key){
+    case '1':
+      State = Debit;
+      break;
+    case '2':
+      State = Credit;
+      break;
+  }
+}
+  
+/*
+  Credit state
+*/
+ void Fiado(){
+    lsd.clear();
+    lsd.print("Choosed Credit");
+    delay(2000);
+    State=Price;
+  }

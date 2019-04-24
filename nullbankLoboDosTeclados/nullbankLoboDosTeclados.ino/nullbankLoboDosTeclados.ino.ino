@@ -55,14 +55,18 @@ int State = 0;
 String password;
 int pressedKey = 0;
 String price;
+int lastState;
+String months;
 
 int isPasswordValid( char * password );
 void clearManPassword();
 void antibioticos();
 void WelcomeDeLadin();
 void Fiado();
-void Talkeis( int lastState );
+void Talkeis();
 void inflation();
+void impostoEhRoubo();
+void heyNubankVaiTomaNoCu();
 
 void setup(){
   Serial.begin(9600);
@@ -85,7 +89,13 @@ void loop(){
         Neon();
         break;
      case Price:
-        Talkeis(Debit);
+        Talkeis();
+        break;
+     case Quota:
+        impostoEhRoubo();
+        break;
+     case InsertCard:
+        heyNubankVaiTomaNoCu();
         break;
   }
   /*if (RC522.isCard()){
@@ -183,9 +193,11 @@ void WelcomeDeLadin(){
   lsd.print("1-Debit/2-Credit");
   switch(key){
     case '1':
+      lastState = Debit;
       State = Debit;
       break;
     case '2':
+      lastState = Credit;
       State = Credit;
       break;
   }
@@ -220,7 +232,7 @@ void Neon(){
 /*
   Price state
 */
-void Talkeis( int lastState ){
+void Talkeis(){
   
   char key = keyboard.getKey();
   //Serial.println(key);
@@ -233,5 +245,50 @@ void Talkeis( int lastState ){
     Serial.println(price);
     lsd.clear();
     lsd.print(price); 
+  }
+
+  if( key == 'E' ){
+    if(lastState == Credit){
+        lsd.clear();
+        lsd.print("How many months?");
+        delay(1000);
+        State = Quota;
+    }else{
+        lsd.clear();
+        lsd.print("Insert card");
+        delay(1000);
+        State = InsertCard;
+    }
+  }
+}
+
+void impostoEhRoubo(){
+
+  char key = keyboard.getKey();
+
+  if( key && (key != 'E' && key != 'C' && key != 'D') ){
+    lsd.clear();
+    if( months.length() < 2 )
+      months.concat(key);
+    lsd.print(months); 
+  }
+
+  if( key == 'E' ){
+    lsd.clear();
+    lsd.print("Insert card");
+    delay(1000);
+    State = InsertCard;
+  }
+  
+}
+
+void heyNubankVaiTomaNoCu(){
+  if (RC522.isCard()){
+    RC522.readCardSerial();
+    lsd.clear();
+    lsd.print("Type a password");
+    for(int i=0;i<5;i++){ 
+      //Serial.println(RC522.serNum[i]);
+    }
   }
 }

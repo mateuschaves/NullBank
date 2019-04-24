@@ -33,7 +33,6 @@ char matrix[amountLines][amountColumns] = {
   {'C','0','E',','}
 };
  
- 
 byte JubileuLines[amountLines] = {30, 32, 34, 36}; 
 byte JunileuColunas[amountColumns] = {38,40, 42,44};
  
@@ -51,14 +50,14 @@ enum {
   Fail
 };
 
-int State = 0;
+int State = Welcome;
 String password;
 int pressedKey = 0;
 String price;
 int lastState;
 String months;
 
-int isPasswordValid( char * password );
+int isPasswordValid();
 void clearManPassword();
 void antibioticos();
 void WelcomeDeLadin();
@@ -67,6 +66,8 @@ void Talkeis();
 void inflation();
 void impostoEhRoubo();
 void heyNubankVaiTomaNoCu();
+void caraCracha();
+void pontual();
 
 void setup(){
   Serial.begin(9600);
@@ -97,56 +98,13 @@ void loop(){
      case InsertCard:
         heyNubankVaiTomaNoCu();
         break;
+     case Password:
+        caraCracha();
+        break; 
   }
-  /*if (RC522.isCard()){
-    RC522.readCardSerial();
-    Serial.println("Card detected:");
-    for(int i=0;i<5;i++){ 
-      Serial.print(RC522.serNum[i]);
-    }
-    Serial.println();
-    Serial.println();
-  }
-  //delay(1000);
-  
-  char key = keyboard.getKey();
-  
-  
-  if(key == 'E'){
-    if(!isPasswordValid(password)){
-      lsd.clear();
-      lsd.print("Can't do this ");
-      lsd.setCursor(0, 1);
-      lsd.print("right ? Moises");
-      clearManPassword();
-      lsd.print(password);
-    }
-  }
-
-  if(key == 'C'){
-      antibioticos();
-      for(int i = 0; i < password.length(); i++)
-        lsd.print("*");
-  }
-  
-  if(pressedKey > 6){
-    pressedKey = 0;
-  }
-  
-  if( key && (key != 'E' && key != 'D' && key != 'C') ){
-    password.concat(key);
-    pressedKey++;
-    lsd.clear();
-    Serial.println(password);
-    for(int i = 0; i < password.length(); i++)
-      lsd.print("*");
-    
-  }*/
-  
-  
 }
 
-int isPasswordValid(String password){
+int isPasswordValid(){
   if(password.length() != 6 ){
     pressedKey = 0;
     return 0;
@@ -163,6 +121,17 @@ void antibioticos(){
   }
   Serial.println(password);
   lsd.clear();
+}
+
+void pontual(){
+  if(months.length() == 1){
+    months = "";
+  }else{
+    months.remove(months.length() - 1, 1);  
+  }
+  Serial.println(months);
+  lsd.clear();
+  lsd.print(months);
 }
 
 void inflation(){
@@ -266,12 +235,15 @@ void impostoEhRoubo(){
 
   char key = keyboard.getKey();
 
-  if( key && (key != 'E' && key != 'C' && key != 'D') ){
+  if( key && (key != 'E' && key != 'C' && key != ',') ){
     lsd.clear();
     if( months.length() < 2 )
       months.concat(key);
     lsd.print(months); 
   }
+
+  if( key == 'C' )
+    pontual();
 
   if( key == 'E' ){
     lsd.clear();
@@ -287,8 +259,56 @@ void heyNubankVaiTomaNoCu(){
     RC522.readCardSerial();
     lsd.clear();
     lsd.print("Type a password");
+    delay(1000);
+    State = Password;
     for(int i=0;i<5;i++){ 
       //Serial.println(RC522.serNum[i]);
     }
+  }
+}
+
+void caraCracha(){
+  
+  char key = keyboard.getKey();
+  
+  if(key == 'E'){
+    if(!isPasswordValid()){
+      lsd.clear();
+      lsd.setCursor(0, 0);
+      lsd.print("Invalid password");
+      lsd.setCursor(3, 1);
+      lsd.print("Try again");
+      clearManPassword();
+      lsd.print(password);
+    }else{
+      lsd.clear();
+      lsd.setCursor(3, 0);
+      lsd.print("Success");
+      delay(1000);
+      clearManPassword();
+      months = "";
+      price = "";
+      pressedKey = 0;
+      State = Welcome;
+    }
+  }
+
+  if(key == 'C'){
+      antibioticos();
+      for(int i = 0; i < password.length(); i++)
+        lsd.print("*");
+  }
+  
+  if(pressedKey > 6){
+    pressedKey = 0;
+  }
+  
+  if( key && (key != 'E' && key != 'D' && key != 'C') ){
+    password.concat(key);
+    pressedKey++;
+    lsd.clear();
+    Serial.println(password);
+    for(int i = 0; i < password.length(); i++)
+      lsd.print("*");
   }
 }

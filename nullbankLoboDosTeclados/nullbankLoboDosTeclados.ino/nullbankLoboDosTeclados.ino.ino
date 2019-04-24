@@ -30,7 +30,7 @@ char matrix[amountLines][amountColumns] = {
   {'1','2','3',' '},
   {'4','5','6',' '},
   {'7','8','9',' '},
-  {'C','0','E','D'}
+  {'C','0','E',','}
 };
  
  
@@ -50,15 +50,19 @@ enum {
   Sucess,
   Fail
 };
+
 int State = 0;
 String password;
 int pressedKey = 0;
+String price;
 
-int isPasswordValid(char * password);
+int isPasswordValid( char * password );
 void clearManPassword();
 void antibioticos();
 void WelcomeDeLadin();
 void Fiado();
+void Talkeis( int lastState );
+void inflation();
 
 void setup(){
   Serial.begin(9600);
@@ -76,6 +80,12 @@ void loop(){
         break;
      case Credit:
         Fiado();
+        break;
+     case Debit:
+        Neon();
+        break;
+     case Price:
+        Talkeis(Debit);
         break;
   }
   /*if (RC522.isCard()){
@@ -145,6 +155,18 @@ void antibioticos(){
   lsd.clear();
 }
 
+void inflation(){
+  if(price.length() == 1){
+    price = "";
+  }else{
+    price.remove(price.length() - 1, 1);  
+  }
+  Serial.println(price);
+  lsd.clear();
+  lsd.print(price);
+}
+
+
 void clearManPassword(){
   password = "";
 }
@@ -172,9 +194,44 @@ void WelcomeDeLadin(){
 /*
   Credit state
 */
- void Fiado(){
+void Fiado(){
+  lsd.clear();
+  lsd.setCursor(1, 0);
+  lsd.print("Choosed Credit");
+  lsd.setCursor(1, 1);
+  lsd.print("Type the price");
+  delay(2000);
+  State = Price;
+}
+
+/*
+  Debit state
+*/
+void Neon(){
+  lsd.clear();
+  lsd.setCursor(1, 0);
+  lsd.print("Choosed Debit");
+  lsd.setCursor(1, 1);
+  lsd.print("Type the price");
+  delay(2000);
+  State = Price;
+}
+
+/*
+  Price state
+*/
+void Talkeis( int lastState ){
+  
+  char key = keyboard.getKey();
+  //Serial.println(key);
+
+  if( key == 'C' )
+    inflation();
+  
+  if( key && (key != 'E' && key != 'C') ){
+    price.concat(key);
+    Serial.println(price);
     lsd.clear();
-    lsd.print("Choosed Credit");
-    delay(2000);
-    State=Price;
+    lsd.print(price); 
   }
+}

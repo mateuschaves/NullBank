@@ -281,6 +281,7 @@ void heyNubankVaiTomaNoCu(){
     lsd.print("Type a password");
     delay(1000);
     State = Password;
+    id = "";
     for(int i=0;i<5;i++){ 
       id.concat(RC522.serNum[i]);
       Serial.print(RC522.serNum[i]);
@@ -336,8 +337,10 @@ void caraCracha(){
   }
 }
 
-int isPasswordCorrect(){
+int isPasswordCorrect(){ 
     if(id == joedisu.id){
+      Serial.println(password);
+      Serial.println(joedisu.password);
       if( password == joedisu.password )
         return 1;
       else

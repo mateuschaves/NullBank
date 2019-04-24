@@ -50,14 +50,33 @@ enum {
   Fail
 };
 
+
+struct CLIENT {
+  String id;
+  String password;
+};
+
+CLIENT joedisu = { "23622182241", "231964" };
+CLIENT nedved = { "492251719726", "696969" };
+
+// Joedison Modas
+//clients[0].id = "23622182241";
+//clients[0].password = "231964";
+
+// Nedved
+//clients[1].id = "492251719726";
+//clients[1].password = "696969";
+
 int State = Welcome;
 String password;
 int pressedKey = 0;
 String price;
 int lastState;
 String months;
+String id;
 
 int isPasswordValid();
+int isPasswordCorrect();
 void clearManPassword();
 void antibioticos();
 void WelcomeDeLadin();
@@ -68,6 +87,7 @@ void impostoEhRoubo();
 void heyNubankVaiTomaNoCu();
 void caraCracha();
 void pontual();
+
 
 void setup(){
   Serial.begin(9600);
@@ -262,7 +282,8 @@ void heyNubankVaiTomaNoCu(){
     delay(1000);
     State = Password;
     for(int i=0;i<5;i++){ 
-      //Serial.println(RC522.serNum[i]);
+      id.concat(RC522.serNum[i]);
+      Serial.print(RC522.serNum[i]);
     }
   }
 }
@@ -272,7 +293,8 @@ void caraCracha(){
   char key = keyboard.getKey();
   
   if(key == 'E'){
-    if(!isPasswordValid()){
+    
+    if( !isPasswordValid() || !isPasswordCorrect() ){
       lsd.clear();
       lsd.setCursor(0, 0);
       lsd.print("Invalid password");
@@ -280,7 +302,9 @@ void caraCracha(){
       lsd.print("Try again");
       clearManPassword();
       lsd.print(password);
-    }else{
+    }
+    
+    if( isPasswordCorrect() ){
       lsd.clear();
       lsd.setCursor(3, 0);
       lsd.print("Success");
@@ -307,8 +331,21 @@ void caraCracha(){
     password.concat(key);
     pressedKey++;
     lsd.clear();
-    Serial.println(password);
     for(int i = 0; i < password.length(); i++)
       lsd.print("*");
   }
+}
+
+int isPasswordCorrect(){
+    if(id == joedisu.id){
+      if( password == joedisu.password )
+        return 1;
+      else
+        return 0;
+    }else{
+      if( password == nedved.password )
+        return 1;
+      else
+        return 0;
+    }
 }

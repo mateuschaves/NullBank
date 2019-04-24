@@ -1,5 +1,23 @@
 /* 
- *  Frank Aguiar Module 
+ *  Frank Aguiar# Project 
+ *  
+ *  "Nunca deixe alguém dizer que você não pode 
+ *  terminar o trabalho um dia antes da entrega" - CHAVES, Mateus (2019).
+ *  
+ *  "Projeto comunitário a base de socialismo.
+ *   Agradecimentos: Jonathan, Eduardo, Carvalho, 
+ *   Fusion, Unicompra e a você xuxa" - COSTA, Felipe (2019).
+ *   
+ *   
+ *   "A Nullbank gostaria de informar que privatizamos o 
+ *   conceito morderno de capitalismo, um forte abraço" - BANK, Null (2000).
+ *   
+ *   
+ *   Made with ♥ in URSAL.
+ *   
+ *   Developed by:
+ *    - Hacker Boy - https://github.com/mateuschaves
+ *    - Feijão Tropeiro - https://github.com/Felipe-matheus
  * 
  *  2019+ Copyright (c) NullBank.
  *  All rights reserved.
@@ -58,14 +76,6 @@ struct CLIENT {
 
 CLIENT joedisu = { "23622182241", "231964" };
 CLIENT nedved = { "492251719726", "696969" };
-
-// Joedison Modas
-//clients[0].id = "23622182241";
-//clients[0].password = "231964";
-
-// Nedved
-//clients[1].id = "492251719726";
-//clients[1].password = "696969";
 
 int State = Welcome;
 String password;
@@ -133,34 +143,40 @@ int isPasswordValid(){
   }
 }
 
+/*
+  Corrige a senha
+*/
 void antibioticos(){
   if(password.length() == 1){
     password = "";
   }else{
     password.remove(password.length() - 1, 1);  
   }
-  Serial.println(password);
   lsd.clear();
 }
 
+/*
+  Corrige o mês
+*/
 void pontual(){
   if(months.length() == 1){
     months = "";
   }else{
     months.remove(months.length() - 1, 1);  
   }
-  Serial.println(months);
   lsd.clear();
   lsd.print(months);
 }
 
+/*
+  Corrige o preço
+*/
 void inflation(){
   if(price.length() == 1){
     price = "";
   }else{
     price.remove(price.length() - 1, 1);  
   }
-  Serial.println(price);
   lsd.clear();
   lsd.print(price);
 }
@@ -231,7 +247,6 @@ void Talkeis(){
   
   if( key && (key != 'E' && key != 'C') ){
     price.concat(key);
-    Serial.println(price);
     lsd.clear();
     lsd.print(price); 
   }
@@ -251,6 +266,9 @@ void Talkeis(){
   }
 }
 
+/*
+  Quota state
+*/
 void impostoEhRoubo(){
 
   char key = keyboard.getKey();
@@ -271,9 +289,11 @@ void impostoEhRoubo(){
     delay(1000);
     State = InsertCard;
   }
-  
 }
 
+/*
+  InsertCard state
+*/
 void heyNubankVaiTomaNoCu(){
   if (RC522.isCard()){
     RC522.readCardSerial();
@@ -284,7 +304,6 @@ void heyNubankVaiTomaNoCu(){
     id = "";
     for(int i=0;i<5;i++){ 
       id.concat(RC522.serNum[i]);
-      Serial.print(RC522.serNum[i]);
     }
   }
 }
@@ -339,8 +358,6 @@ void caraCracha(){
 
 int isPasswordCorrect(){ 
     if(id == joedisu.id){
-      Serial.println(password);
-      Serial.println(joedisu.password);
       if( password == joedisu.password )
         return 1;
       else

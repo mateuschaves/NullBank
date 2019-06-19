@@ -509,6 +509,8 @@ void authUser(){
     client.println();
     client.print(porra);
     delay(3000);
+    Serial.println(porra);
+    porra = "id=5d00801dd35bb10a9c757787&password=";
     State = readPassword;
   }else {
     // if you didn't get a connection to the server:
@@ -522,10 +524,10 @@ void authUser(){
 void analfabetoFuncional(){
   if (client.available()) {
     char c = client.read();
+    Serial.write(c);
     gamb.concat(c);
     if(gamb.substring(205,208).length() == 3){
         Serial.print("RESULTADO DA API\n");
-        Serial.print(gamb.substring(205,208));
         if(gamb.substring(205,208) == "104"){
           lsd.clear();
           lsd.setCursor(0, 0);
@@ -613,8 +615,15 @@ void rapariga(){
     char c = client.read();
     gamb.concat(c);
     if(gamb.substring(215,218).length() == 3){
-        Serial.print("SALDO\n");
-        Serial.print(gamb.substring(215,218));
+        lsd.clear();
+        lsd.setCursor(3, 0);
+        lsd.print("Balance");
+        lsd.setCursor(3, 1);
+        lsd.print("R$ " + gamb.substring(215,218));
+        delay(3000);
+        State = Welcome;
     }
+    
+    dataBuy = "user=5d00801dd35bb10a9c757787&password=";
   }
 }

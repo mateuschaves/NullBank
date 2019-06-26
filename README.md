@@ -15,6 +15,7 @@ git clone https://github.com/mateuschaves/NullBank.git
 ## Autor
 
 * **Mateus Henrique** - [Github](https://github.com/mateuschaves) 
+* **Felipe** - [Github](https://github.com/Felipe-matheus)
 
 ## Professor da disciplina
 
